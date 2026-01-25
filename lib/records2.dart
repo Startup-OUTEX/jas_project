@@ -1,132 +1,273 @@
 import 'package:flutter/material.dart';
-import 'settings.dart';
+import 'package:intl/intl.dart';
+import 'services/score_service.dart';
+import 'widgets/side_menu.dart';
+import 'widgets/app_footer.dart';
 
-class Records2Screen extends StatelessWidget {
+class Records2Screen extends StatefulWidget {
   const Records2Screen({super.key});
 
   @override
+  State<Records2Screen> createState() => _Records2ScreenState();
+}
+
+class _Records2ScreenState extends State<Records2Screen> {
+  final ScoreService _scoreService = ScoreService();
+  List<ScoreEntry> _topScores = [];
+  ScoreEntry? _dailyBest;
+  ScoreEntry? _allTimeBest;
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    final tops = await _scoreService.getTopScores();
+    final daily = await _scoreService.getDailyBest();
+    final allTime = await _scoreService.getAllTimeBest();
+
+    if (mounted) {
+      setState(() {
+        _topScores = tops;
+        _dailyBest = daily;
+        _allTimeBest = allTime;
+        _loading = false;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => const Settings1Screen()),
-      ),
-      child: Scaffold(
-        body: SafeArea(
-          child: Stack(
-            children: [
-              // 1. Меню + Контент
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Меню
-                  Container(
-                    width: 200,
-                    padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Image.asset('assets/images/logo.png', width: 200),
-                        const SizedBox(height: 8),
-                        Transform.translate(
-                          offset: const Offset(2, 0),
-                          child: Image.asset('assets/images/image2.png', width: 50),
-                        ),
-                        const SizedBox(height: 12),
-                        Transform.translate(
-                          offset: const Offset(2, 0),
-                          child: Image.asset('assets/images/image1.png', width: 50),
-                        ),
-                        const SizedBox(height: 12),
-                        Transform.translate(
-                          offset: const Offset(2, 0),
-                          child: Image.asset('assets/images/image3.png', width: 50),
-                        ),
-                      ],
+    return Scaffold(
+      backgroundColor: const Color(0xFF4E2784),
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Меню (перевикористовуємо)
+                const SideMenu(),
+
+                // Контент
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      top: 20,
+                      right: 30,
+                      bottom: 60,
                     ),
-                  ),
-
-                  // Таблиця
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 20, right: 30, bottom: 60), // bottom: 60 щоб не наехать на футер
-                      child: Column(
-                        children: [
-                          const Text('Таблиця лідерів', style: TextStyle(fontSize: 24, color: Colors.white)),
-                          const SizedBox(height: 10),
-                          
-                          const Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    child: _loading
+                        ? const Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
+                          )
+                        : Column(
                             children: [
-                               Text('Найкраще коло за сьогодні: [XX]% \nНамалював/ла - Вікторія', style: TextStyle(fontSize: 12, color: Colors.white)),
-                               Text('Найкраще коло за весь час: [XX]% \nНамалював/ла - Вітя', style: TextStyle(fontSize: 12, color: Colors.white)),
-                            ],
-                          ),
-                          
-                          const SizedBox(height: 15),
-
-                          Expanded(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.white),
-                                borderRadius: BorderRadius.circular(15),
+                              const Text(
+                                'Таблиця лідерів',
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                              padding: const EdgeInsets.all(15),
-                              child: Row(
+                              const SizedBox(height: 10),
+
+                              // Картки найкращих
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: [
-                                  Expanded(
-                                    flex: 7,
-                                    child: ListView.separated(
-                                      itemCount: 15,
-                                      separatorBuilder: (c, i) => const Divider(color: Colors.white24, height: 10),
-                                      itemBuilder: (c, i) => const Padding(
-                                        padding: EdgeInsets.symmetric(vertical: 4.0),
-                                        child: Row(
-                                          children: [
-                                            SizedBox(width: 100, child: Text('Коло [XX]%', style: TextStyle(fontSize: 14, color: Colors.white))),
-                                            Expanded(child: Text('Намалював/ла - Коля', style: TextStyle(fontSize: 14, color: Colors.white))),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
+                                  _buildSummaryCard(
+                                    'Найкраще за сьогодні',
+                                    _dailyBest,
                                   ),
-                                  
-                                  Expanded(
-                                    flex: 3,
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        const Text('Спробуй побити рекорд!', textAlign: TextAlign.center, style: TextStyle(fontSize: 12, color: Colors.white)),
-                                        const SizedBox(height: 10),
-                                        Image.asset('assets/images/image3.png', width: 60, height: 60),
-                                      ],
-                                    ),
+                                  _buildSummaryCard(
+                                    'Найкраще за весь час',
+                                    _allTimeBest,
                                   ),
                                 ],
                               ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
 
-              // --- ФУТЕР (ФИКСИРОВАН) ---
-              const Positioned(
-                left: 0, right: 0, bottom: 0,
-                child: Column(
-                  children: [
-                    Text('Застосунок створено за підтримки OUTEX', style: TextStyle(fontSize: 11, color: Colors.white70)),
-                    Text('outexua.com', style: TextStyle(fontSize: 11, color: Colors.white70)),
-                  ],
+                              const SizedBox(height: 15),
+
+                              // Таблиця
+                              Expanded(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.white),
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Colors.white.withOpacity(0.05),
+                                  ),
+                                  padding: const EdgeInsets.all(15),
+                                  child: Row(
+                                    children: [
+                                      // Список рекордів
+                                      Expanded(
+                                        flex: 7,
+                                        child: _topScores.isEmpty
+                                            ? const Center(
+                                                child: Text(
+                                                  'Поки немає рекордів. Стань першим!',
+                                                  style: TextStyle(
+                                                    color: Colors.white70,
+                                                  ),
+                                                ),
+                                              )
+                                            : ListView.separated(
+                                                itemCount: _topScores.length,
+                                                separatorBuilder: (c, i) =>
+                                                    const Divider(
+                                                      color: Colors.white24,
+                                                      height: 10,
+                                                    ),
+                                                itemBuilder: (c, i) {
+                                                  final entry = _topScores[i];
+                                                  return Padding(
+                                                    padding:
+                                                        const EdgeInsets.symmetric(
+                                                          vertical: 4.0,
+                                                        ),
+                                                    child: Row(
+                                                      children: [
+                                                        SizedBox(
+                                                          width: 40,
+                                                          child: Text(
+                                                            '#${i + 1}',
+                                                            style: const TextStyle(
+                                                              color: Colors
+                                                                  .yellowAccent,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          width: 120,
+                                                          child: Text(
+                                                            'Коло ${entry.score.toStringAsFixed(1)}%',
+                                                            style:
+                                                                const TextStyle(
+                                                                  fontSize: 14,
+                                                                  color: Colors
+                                                                      .white,
+                                                                ),
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: Text(
+                                                            '${entry.playerName} (${DateFormat('dd.MM HH:mm').format(entry.date)})',
+                                                            style:
+                                                                const TextStyle(
+                                                                  fontSize: 12,
+                                                                  color: Colors
+                                                                      .white70,
+                                                                ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                      ),
+
+                                      // Заклик
+                                      Expanded(
+                                        flex: 3,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            const Text(
+                                              'Спробуй побити рекорд!',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 10),
+                                            GestureDetector(
+                                              onTap: () => Navigator.of(
+                                                context,
+                                              ).pop(), // Turn back to previous screen (Game probably)
+                                              child: Image.asset(
+                                                'assets/images/image3.png',
+                                                width: 80,
+                                                height: 80,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 10),
+                                            ElevatedButton.icon(
+                                              onPressed: () =>
+                                                  Navigator.of(context).pop(),
+                                              icon: const Icon(
+                                                Icons.play_arrow,
+                                              ),
+                                              label: const Text('Грати'),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                  ),
                 ),
+              ],
+            ),
+
+            // --- ФУТЕР ---
+            const Positioned(left: 0, right: 0, bottom: 5, child: AppFooter()),
+
+            // Кнопка назад
+            Positioned(
+              top: 20,
+              left: 20,
+              child: FloatingActionButton.small(
+                backgroundColor: Colors.white,
+                child: const Icon(Icons.arrow_back, color: Color(0xFF4E2784)),
+                onPressed: () => Navigator.of(context).pop(),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
+    );
+  }
+
+  Widget _buildSummaryCard(String title, ScoreEntry? entry) {
+    return Column(
+      children: [
+        Text(
+          title,
+          style: const TextStyle(fontSize: 12, color: Colors.white70),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          entry != null ? '${entry.score.toStringAsFixed(1)}%' : '--%',
+          style: const TextStyle(
+            fontSize: 16,
+            color: Colors.yellowAccent,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        if (entry != null)
+          Text(
+            entry.playerName,
+            style: const TextStyle(fontSize: 12, color: Colors.white),
+          ),
+      ],
     );
   }
 }
