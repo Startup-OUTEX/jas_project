@@ -66,14 +66,15 @@ class CircleEvaluator {
     String message = '';
     if (score > 95) {
       message = 'Неймовірно!';
-    } else if (score > 90)
+    } else if (score > 90) {
       message = 'Чудово!';
-    else if (score > 80)
+    } else if (score > 80) {
       message = 'Дуже добре';
-    else if (score > 50)
+    } else if (score > 50) {
       message = 'Непогано';
-    else
+    } else {
       message = 'Спробуй ще раз';
+    }
 
     return CircleResult(
       score: score,

@@ -28,14 +28,14 @@ class ScoreEntry {
 class ScoreService {
   static const String _key = 'circle_scores';
 
-  Future<void> saveScore(double score) async {
+  Future<void> saveScore(double score, {String playerName = 'Гравець'}) async {
     final prefs = await SharedPreferences.getInstance();
     final List<String> rawList = prefs.getStringList(_key) ?? [];
 
     final newEntry = ScoreEntry(
       score: score,
       date: DateTime.now(),
-      playerName: 'Гравець', // Можна додати інпут імені пізніше
+      playerName: playerName.isEmpty ? 'Гравець' : playerName,
     );
 
     rawList.add(jsonEncode(newEntry.toJson()));
@@ -68,6 +68,11 @@ class ScoreService {
 
     if (todayScores.isEmpty) return null;
     return todayScores.first; // Вже відсортовано
+  }
+
+  Future<void> clearAllScores() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_key);
   }
 
   Future<ScoreEntry?> getAllTimeBest() async {

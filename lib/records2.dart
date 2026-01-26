@@ -55,11 +55,7 @@ class _Records2ScreenState extends State<Records2Screen> {
                 // Контент
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(
-                      top: 20,
-                      right: 30,
-                      bottom: 60,
-                    ),
+                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 60),
                     child: _loading
                         ? const Center(
                             child: CircularProgressIndicator(
@@ -67,6 +63,7 @@ class _Records2ScreenState extends State<Records2Screen> {
                             ),
                           )
                         : Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               const Text(
                                 'Таблиця лідерів',
@@ -75,6 +72,7 @@ class _Records2ScreenState extends State<Records2Screen> {
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                 ),
+                                textAlign: TextAlign.center,
                               ),
                               const SizedBox(height: 10),
 
@@ -83,13 +81,17 @@ class _Records2ScreenState extends State<Records2Screen> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceAround,
                                 children: [
-                                  _buildSummaryCard(
-                                    'Найкраще за сьогодні',
-                                    _dailyBest,
+                                  Expanded(
+                                    child: _buildSummaryCard(
+                                      'Найкраще за сьогодні',
+                                      _dailyBest,
+                                    ),
                                   ),
-                                  _buildSummaryCard(
-                                    'Найкраще за весь час',
-                                    _allTimeBest,
+                                  Expanded(
+                                    child: _buildSummaryCard(
+                                      'Найкраще за весь час',
+                                      _allTimeBest,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -109,11 +111,12 @@ class _Records2ScreenState extends State<Records2Screen> {
                                     children: [
                                       // Список рекордів
                                       Expanded(
-                                        flex: 7,
+                                        flex: 2,
                                         child: _topScores.isEmpty
                                             ? const Center(
                                                 child: Text(
                                                   'Поки немає рекордів. Стань першим!',
+                                                  textAlign: TextAlign.center,
                                                   style: TextStyle(
                                                     color: Colors.white70,
                                                   ),
@@ -128,47 +131,133 @@ class _Records2ScreenState extends State<Records2Screen> {
                                                     ),
                                                 itemBuilder: (c, i) {
                                                   final entry = _topScores[i];
-                                                  return Padding(
+                                                  // Determine styling based on rank
+                                                  Color rankColor =
+                                                      Colors.white;
+                                                  Widget rankWidget;
+
+                                                  if (i == 0) {
+                                                    rankColor = const Color(
+                                                      0xFFFFD700,
+                                                    ); // Gold
+                                                    rankWidget = const Icon(
+                                                      Icons.emoji_events,
+                                                      color: Color(0xFFFFD700),
+                                                      size: 24,
+                                                    );
+                                                  } else if (i == 1) {
+                                                    rankColor = const Color(
+                                                      0xFFC0C0C0,
+                                                    ); // Silver
+                                                    rankWidget = const Icon(
+                                                      Icons.emoji_events,
+                                                      color: Color(0xFFC0C0C0),
+                                                      size: 22,
+                                                    );
+                                                  } else if (i == 2) {
+                                                    rankColor = const Color(
+                                                      0xFFCD7F32,
+                                                    ); // Bronze
+                                                    rankWidget = const Icon(
+                                                      Icons.emoji_events,
+                                                      color: Color(0xFFCD7F32),
+                                                      size: 20,
+                                                    );
+                                                  } else {
+                                                    rankWidget = Text(
+                                                      '#${i + 1}',
+                                                      style: const TextStyle(
+                                                        color: Colors.white70,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    );
+                                                  }
+
+                                                  return Container(
+                                                    decoration: BoxDecoration(
+                                                      color: i < 3
+                                                          ? rankColor
+                                                                .withOpacity(
+                                                                  0.1,
+                                                                )
+                                                          : null,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            8,
+                                                          ),
+                                                      border: i < 3
+                                                          ? Border.all(
+                                                              color: rankColor
+                                                                  .withOpacity(
+                                                                    0.3,
+                                                                  ),
+                                                            )
+                                                          : null,
+                                                    ),
                                                     padding:
                                                         const EdgeInsets.symmetric(
-                                                          vertical: 4.0,
+                                                          vertical: 8.0,
+                                                          horizontal: 8.0,
                                                         ),
                                                     child: Row(
                                                       children: [
                                                         SizedBox(
                                                           width: 40,
+                                                          child: Center(
+                                                            child: rankWidget,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        SizedBox(
+                                                          width: 70,
                                                           child: Text(
-                                                            '#${i + 1}',
-                                                            style: const TextStyle(
-                                                              color: Colors
-                                                                  .yellowAccent,
+                                                            '${entry.score.toStringAsFixed(1)}%',
+                                                            style: TextStyle(
+                                                              fontSize: 14,
+                                                              color: rankColor,
                                                               fontWeight:
                                                                   FontWeight
                                                                       .bold,
                                                             ),
                                                           ),
                                                         ),
-                                                        SizedBox(
-                                                          width: 120,
-                                                          child: Text(
-                                                            'Коло ${entry.score.toStringAsFixed(1)}%',
-                                                            style:
-                                                                const TextStyle(
+                                                        Expanded(
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Text(
+                                                                entry
+                                                                    .playerName,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                style: const TextStyle(
                                                                   fontSize: 14,
                                                                   color: Colors
                                                                       .white,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
                                                                 ),
-                                                          ),
-                                                        ),
-                                                        Expanded(
-                                                          child: Text(
-                                                            '${entry.playerName} (${DateFormat('dd.MM HH:mm').format(entry.date)})',
-                                                            style:
-                                                                const TextStyle(
-                                                                  fontSize: 12,
+                                                              ),
+                                                              Text(
+                                                                DateFormat(
+                                                                  'dd.MM HH:mm',
+                                                                ).format(
+                                                                  entry.date,
+                                                                ),
+                                                                style: const TextStyle(
+                                                                  fontSize: 10,
                                                                   color: Colors
-                                                                      .white70,
+                                                                      .white54,
                                                                 ),
+                                                              ),
+                                                            ],
                                                           ),
                                                         ),
                                                       ],
@@ -178,42 +267,45 @@ class _Records2ScreenState extends State<Records2Screen> {
                                               ),
                                       ),
 
-                                      // Заклик
+                                      // Заклик / Кнопки справа
                                       Expanded(
-                                        flex: 3,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            const Text(
-                                              'Спробуй побити рекорд!',
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.white,
+                                        flex: 1,
+                                        child: SingleChildScrollView(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              const Text(
+                                                'Спробуй побити рекорд!',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.white,
+                                                ),
                                               ),
-                                            ),
-                                            const SizedBox(height: 10),
-                                            GestureDetector(
-                                              onTap: () => Navigator.of(
-                                                context,
-                                              ).pop(), // Turn back to previous screen (Game probably)
-                                              child: Image.asset(
-                                                'assets/images/image3.png',
-                                                width: 80,
-                                                height: 80,
+                                              const SizedBox(height: 10),
+                                              const SizedBox(height: 10),
+                                              // Image3 removed
+                                              const SizedBox(height: 10),
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 10,
+                                                      ),
+                                                ),
+                                                child: const Text(
+                                                  'Грати',
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                            const SizedBox(height: 10),
-                                            ElevatedButton.icon(
-                                              onPressed: () =>
-                                                  Navigator.of(context).pop(),
-                                              icon: const Icon(
-                                                Icons.play_arrow,
-                                              ),
-                                              label: const Text('Грати'),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -228,7 +320,12 @@ class _Records2ScreenState extends State<Records2Screen> {
             ),
 
             // --- ФУТЕР ---
-            const Positioned(left: 0, right: 0, bottom: 5, child: AppFooter()),
+            const Positioned(
+              left: 0,
+              right: 0,
+              bottom: 5,
+              child: Center(child: AppFooter()),
+            ),
 
             // Кнопка назад
             Positioned(
@@ -251,6 +348,7 @@ class _Records2ScreenState extends State<Records2Screen> {
       children: [
         Text(
           title,
+          textAlign: TextAlign.center,
           style: const TextStyle(fontSize: 12, color: Colors.white70),
         ),
         const SizedBox(height: 4),
@@ -265,6 +363,7 @@ class _Records2ScreenState extends State<Records2Screen> {
         if (entry != null)
           Text(
             entry.playerName,
+            overflow: TextOverflow.ellipsis,
             style: const TextStyle(fontSize: 12, color: Colors.white),
           ),
       ],

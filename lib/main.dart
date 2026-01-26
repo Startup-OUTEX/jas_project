@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'splash_screen.dart';
 
+import 'locale_strings.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await AppLocale.init();
   // Принудительно ставим горизонтальный режим
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.landscapeLeft,
@@ -22,9 +25,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'e-Ukraine',
         scaffoldBackgroundColor: const Color(0xFF4E2784), // #4e2784
-        textTheme: const TextTheme(
-          bodyMedium: TextStyle(color: Colors.white),
-        ),
+        textTheme: const TextTheme(bodyMedium: TextStyle(color: Colors.white)),
       ),
       home: const SplashScreen(),
     );
