@@ -5,6 +5,7 @@ class SettingsService {
   static const String keyMinCirclePercentage = 'min_circle_percentage';
   static const String keyResetInterval = 'reset_interval';
   static const String keyLastResetDate = 'last_reset_date';
+  static const String keySoundEnabled = 'sound_enabled';
 
   // Singleton
   static final SettingsService _instance = SettingsService._internal();
@@ -15,12 +16,14 @@ class SettingsService {
   String accuracyMethod = 'basic'; // 'basic', 'advanced'
   double minCirclePercentage = 15.0;
   String resetInterval = 'monthly'; // 'daily', 'monthly', 'never'
+  bool isSoundEnabled = true;
 
   Future<void> loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     accuracyMethod = prefs.getString(keyAccuracyMethod) ?? 'basic';
     minCirclePercentage = prefs.getDouble(keyMinCirclePercentage) ?? 15.0;
     resetInterval = prefs.getString(keyResetInterval) ?? 'monthly';
+    isSoundEnabled = prefs.getBool(keySoundEnabled) ?? true;
   }
 
   Future<void> setAccuracyMethod(String method) async {
@@ -41,6 +44,12 @@ class SettingsService {
     await prefs.setString(keyResetInterval, interval);
   }
 
+  Future<void> setSoundEnabled(bool value) async {
+    isSoundEnabled = value;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(keySoundEnabled, value);
+  }
+
   Future<DateTime?> getLastResetDate() async {
     final prefs = await SharedPreferences.getInstance();
     final dateStr = prefs.getString(keyLastResetDate);
@@ -59,9 +68,11 @@ class SettingsService {
     await prefs.remove(keyMinCirclePercentage);
     await prefs.remove(keyResetInterval);
     await prefs.remove(keyLastResetDate);
+    await prefs.remove(keySoundEnabled);
     // Reset to defaults
     accuracyMethod = 'basic';
     minCirclePercentage = 15.0;
     resetInterval = 'monthly';
+    isSoundEnabled = true;
   }
 }

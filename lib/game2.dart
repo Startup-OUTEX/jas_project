@@ -4,6 +4,8 @@ import 'circle_logic.dart';
 import 'records2.dart';
 import 'services/score_service.dart';
 import 'services/settings_service.dart';
+import 'services/sound_service.dart'; // Import SoundService
+import 'locale_strings.dart';
 import 'widgets/app_footer.dart';
 
 class Game2Screen extends StatefulWidget {
@@ -20,6 +22,9 @@ class _Game2ScreenState extends State<Game2Screen>
   bool _isDrawing = false;
   final ScoreService _scoreService = ScoreService();
   final SettingsService _settingsService = SettingsService();
+  final SoundService _soundService = SoundService(); // Init SoundService
+
+  double _currentScore = 0.0; // Real-time score
 
   // Settings
   double _minThreshold = 15.0;
@@ -29,14 +34,16 @@ class _Game2ScreenState extends State<Game2Screen>
   late Animation<double> _scaleAnimation;
 
   // Dynamic Text
-  final List<String> _instructions = [
-    'Намагайся намалювати ідеальне коло одним рухом',
-    'Ми порівняємо точність твого кола з еталоном',
-    'Спробуй досягти 100% точності!',
-    'Малюй швидко та впевнено!',
+  List<String> get _instructions => [
+    AppLocale.tr('game_instruction_1'),
+    AppLocale.tr('game_instruction_2'),
+    AppLocale.tr('game_instruction_3'),
+    AppLocale.tr('game_instruction_4'),
   ];
   int _currentInstructionIndex = 0;
   Timer? _textTimer;
+  Timer? _drawingTimer;
+  static const Duration _maxDrawingTime = Duration(seconds: 5);
 
   @override
   void initState() {
@@ -74,6 +81,7 @@ class _Game2ScreenState extends State<Game2Screen>
   void dispose() {
     _animController.dispose();
     _textTimer?.cancel();
+    _drawingTimer?.cancel();
     super.dispose();
   }
 
@@ -81,24 +89,40 @@ class _Game2ScreenState extends State<Game2Screen>
     setState(() {
       _points.clear();
       _result = null;
+      _currentScore = 0.0;
       _isDrawing = true;
       _points.add(details.localPosition);
       _animController.reset();
     });
+    _soundService.startLoop('circling.wav'); // Start drawing sound
+
+    _drawingTimer?.cancel();
+    _drawingTimer = Timer(_maxDrawingTime, _onTimeout);
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
     if (!_isDrawing) return;
     setState(() {
       _points.add(details.localPosition);
+
+      // Calculate score in real-time if enough points
+      if (_points.length > 10) {
+        final method = _settingsService.accuracyMethod;
+        final tempResult = CircleEvaluator.evaluate(_points, method: method);
+        _currentScore = tempResult.score;
+      }
     });
   }
 
   void _onPanEnd(DragEndDetails details) async {
+    _drawingTimer?.cancel();
     if (!_isDrawing) return;
     setState(() {
       _isDrawing = false;
     });
+
+    await _soundService.stop(); // Stop drawing sound
+    if (!mounted) return;
 
     // 1. Check strict size constraint (Too small?)
     // We can estimate size by bounding box of points
@@ -116,16 +140,19 @@ class _Game2ScreenState extends State<Game2Screen>
     // Assume 100px diameter -> 50px radius
     // Exhibition screen is huge (1920x1080), so 100px is quite small.
     if (width < 100 || height < 100) {
-      _showFeedback('Занадто маленьке! Малюй розмашисто!');
+      _showFeedback(AppLocale.tr('game_feedback_small'));
+      _soundService.playSound('fail.wav'); // Play fail sound
       setState(() => _points.clear());
       return;
     }
 
-    final result = CircleEvaluator.evaluate(_points);
+    final method = _settingsService.accuracyMethod;
+    final result = CircleEvaluator.evaluate(_points, method: method);
 
     // 2. Check threshold
     if (result.score < _minThreshold) {
-      _showFeedback('Трохи кривувато... Спробуй ще раз!');
+      _showFeedback(AppLocale.tr('game_feedback_accuracy'));
+      _soundService.playSound('fail.wav'); // Play fail sound
       setState(() => _points.clear());
       return;
     }
@@ -138,6 +165,7 @@ class _Game2ScreenState extends State<Game2Screen>
       _result = result;
     });
 
+    _soundService.playSound('score.wav'); // Play success sound
     _animController.forward();
   }
 
@@ -152,14 +180,14 @@ class _Game2ScreenState extends State<Game2Screen>
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          title: const Text(
-            'Зберегти результат',
-            style: TextStyle(color: Color(0xFF4E2784)),
+          title: Text(
+            AppLocale.tr('game_save_title'),
+            style: const TextStyle(color: Color(0xFF4E2784)),
           ),
           content: TextField(
             controller: nameController,
-            decoration: const InputDecoration(
-              hintText: "Введи своє ім'я",
+            decoration: InputDecoration(
+              hintText: AppLocale.tr('game_enter_name'),
               border: OutlineInputBorder(),
             ),
             maxLength: 15,
@@ -167,7 +195,7 @@ class _Game2ScreenState extends State<Game2Screen>
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Скасувати'),
+              child: Text(AppLocale.tr('game_btn_cancel')),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -190,9 +218,9 @@ class _Game2ScreenState extends State<Game2Screen>
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF4E2784),
               ),
-              child: const Text(
-                'Зберегти',
-                style: TextStyle(color: Colors.white),
+              child: Text(
+                AppLocale.tr('game_btn_save_confirm'),
+                style: const TextStyle(color: Colors.white),
               ),
             ),
           ],
@@ -219,13 +247,30 @@ class _Game2ScreenState extends State<Game2Screen>
     );
   }
 
+  void _onTimeout() {
+    if (!_isDrawing) return;
+
+    _drawingTimer?.cancel();
+    _soundService.stop();
+    _soundService.playSound('fail.wav');
+
+    setState(() {
+      _isDrawing = false;
+      _points.clear();
+      _result = null;
+      _currentScore = 0.0;
+    });
+
+    _showFeedback(AppLocale.tr('game_timeout'));
+  }
+
   String _getEncouragingMessage(double score) {
-    if (score >= 95) return 'НЕЙМОВІРНО! ТИ МАЙЖЕ РОБОТ!';
-    if (score >= 90) return 'ФАНТАСТИЧНИЙ РЕЗУЛЬТАТ!';
-    if (score >= 80) return 'ДУЖЕ ДОБРЕ! ТАК ТРИМАТИ!';
-    if (score >= 70) return 'НЕПОГАНО, АЛЕ МОЖНА КРАЩЕ!';
-    if (score >= 50) return 'НОРМАЛЬНО. СПРОБУЙ ЩЕ!';
-    return 'ТРЕБА БІЛЬШЕ ПРАКТИКИ!';
+    if (score >= 95) return AppLocale.tr('enc_robot');
+    if (score >= 90) return AppLocale.tr('enc_fantastic');
+    if (score >= 80) return AppLocale.tr('enc_good');
+    if (score >= 70) return AppLocale.tr('enc_ok');
+    if (score >= 50) return AppLocale.tr('enc_norm');
+    return AppLocale.tr('enc_bad');
   }
 
   @override
@@ -284,11 +329,42 @@ class _Game2ScreenState extends State<Game2Screen>
                           ),
                         ),
                         const SizedBox(height: 20),
-                        const Text(
-                          'Торкнись і малюй!',
-                          style: TextStyle(fontSize: 18, color: Colors.white70),
+                        Text(
+                          AppLocale.tr('game_touch_draw'),
+                          style: const TextStyle(
+                            fontSize: 18,
+                            color: Colors.white70,
+                          ),
                         ),
                       ],
+                    ),
+                  ),
+
+                // 6. Real-time Score Display (Top Center)
+                if (_isDrawing && _points.length > 5)
+                  Positioned(
+                    top: 100,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.black54,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          '${_currentScore.toStringAsFixed(0)}%',
+                          style: TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                            color: _getColorForScore(_currentScore),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
 
@@ -359,9 +435,11 @@ class _Game2ScreenState extends State<Game2Screen>
                                     Icons.refresh,
                                     color: Color(0xFF4E2784),
                                   ),
-                                  label: const Text(
-                                    'Ще раз',
-                                    style: TextStyle(color: Color(0xFF4E2784)),
+                                  label: Text(
+                                    AppLocale.tr('game_btn_retry'),
+                                    style: const TextStyle(
+                                      color: Color(0xFF4E2784),
+                                    ),
                                   ),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.white,
@@ -378,9 +456,9 @@ class _Game2ScreenState extends State<Game2Screen>
                                     Icons.save,
                                     color: Colors.white,
                                   ),
-                                  label: const Text(
-                                    'Зберегти',
-                                    style: TextStyle(color: Colors.white),
+                                  label: Text(
+                                    AppLocale.tr('game_btn_save'),
+                                    style: const TextStyle(color: Colors.white),
                                   ),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.blueAccent,

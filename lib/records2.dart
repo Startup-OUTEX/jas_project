@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'services/score_service.dart';
-import 'widgets/side_menu.dart';
 import 'widgets/app_footer.dart';
+import 'locale_strings.dart';
 
 class Records2Screen extends StatefulWidget {
   const Records2Screen({super.key});
@@ -11,17 +11,36 @@ class Records2Screen extends StatefulWidget {
   State<Records2Screen> createState() => _Records2ScreenState();
 }
 
-class _Records2ScreenState extends State<Records2Screen> {
+class _Records2ScreenState extends State<Records2Screen>
+    with SingleTickerProviderStateMixin {
   final ScoreService _scoreService = ScoreService();
   List<ScoreEntry> _topScores = [];
   ScoreEntry? _dailyBest;
   ScoreEntry? _allTimeBest;
   bool _loading = true;
 
+  late AnimationController _pulseController;
+  late Animation<double> _pulseAnimation;
+
   @override
   void initState() {
     super.initState();
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    )..repeat(reverse: true);
+
+    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
+
     _loadData();
+  }
+
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadData() async {
@@ -50,7 +69,7 @@ class _Records2ScreenState extends State<Records2Screen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Меню (перевикористовуємо)
-                const SideMenu(),
+                // const SideMenu(), // Removed as per request (MAN logo)
 
                 // Контент
                 Expanded(
@@ -65,9 +84,9 @@ class _Records2ScreenState extends State<Records2Screen> {
                         : Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              const Text(
-                                'Таблиця лідерів',
-                                style: TextStyle(
+                              Text(
+                                AppLocale.tr('rec_title'),
+                                style: const TextStyle(
                                   fontSize: 24,
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -83,13 +102,13 @@ class _Records2ScreenState extends State<Records2Screen> {
                                 children: [
                                   Expanded(
                                     child: _buildSummaryCard(
-                                      'Найкраще за сьогодні',
+                                      AppLocale.tr('rec_today_best'),
                                       _dailyBest,
                                     ),
                                   ),
                                   Expanded(
                                     child: _buildSummaryCard(
-                                      'Найкраще за весь час',
+                                      AppLocale.tr('rec_total_best'),
                                       _allTimeBest,
                                     ),
                                   ),
@@ -113,11 +132,11 @@ class _Records2ScreenState extends State<Records2Screen> {
                                       Expanded(
                                         flex: 2,
                                         child: _topScores.isEmpty
-                                            ? const Center(
+                                            ? Center(
                                                 child: Text(
-                                                  'Поки немає рекордів. Стань першим!',
+                                                  AppLocale.tr('rec_empty'),
                                                   textAlign: TextAlign.center,
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                     color: Colors.white70,
                                                   ),
                                                 ),
@@ -275,10 +294,10 @@ class _Records2ScreenState extends State<Records2Screen> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: [
-                                              const Text(
-                                                'Спробуй побити рекорд!',
+                                              Text(
+                                                AppLocale.tr('rec_call'),
                                                 textAlign: TextAlign.center,
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   fontSize: 14,
                                                   color: Colors.white,
                                                 ),
@@ -287,22 +306,42 @@ class _Records2ScreenState extends State<Records2Screen> {
                                               const SizedBox(height: 10),
                                               // Image3 removed
                                               const SizedBox(height: 10),
-                                              ElevatedButton(
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                                style: ElevatedButton.styleFrom(
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                        horizontal: 10,
+                                              AnimatedBuilder(
+                                                animation: _pulseAnimation,
+                                                builder: (context, child) {
+                                                  return Transform.scale(
+                                                    scale:
+                                                        _pulseAnimation.value,
+                                                    child: ElevatedButton(
+                                                      onPressed: () {
+                                                        Navigator.of(
+                                                          context,
+                                                        ).pop();
+                                                      },
+                                                      style: ElevatedButton.styleFrom(
+                                                        padding:
+                                                            const EdgeInsets.symmetric(
+                                                              horizontal: 20,
+                                                              vertical: 12,
+                                                            ),
+                                                        backgroundColor:
+                                                            Colors.yellowAccent,
+                                                        foregroundColor:
+                                                            Colors.black,
                                                       ),
-                                                ),
-                                                child: const Text(
-                                                  'Грати',
-                                                  style: TextStyle(
-                                                    fontSize: 12,
-                                                  ),
-                                                ),
+                                                      child: Text(
+                                                        AppLocale.tr(
+                                                          'rec_play',
+                                                        ),
+                                                        style: const TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
                                               ),
                                             ],
                                           ),

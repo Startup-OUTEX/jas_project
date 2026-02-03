@@ -1,8 +1,35 @@
 import 'package:flutter/material.dart';
 import 'locale_strings.dart';
 
-class AboutScreen extends StatelessWidget {
+import 'package:confetti/confetti.dart';
+import 'services/easter_egg_service.dart';
+
+class AboutScreen extends StatefulWidget {
   const AboutScreen({super.key});
+
+  @override
+  State<AboutScreen> createState() => _AboutScreenState();
+}
+
+class _AboutScreenState extends State<AboutScreen> {
+  late ConfettiController _confettiController;
+
+  @override
+  void initState() {
+    super.initState();
+    _confettiController = ConfettiController(
+      duration: const Duration(seconds: 3),
+    );
+    EasterEggService().onTriggerConfetti = () {
+      if (mounted) _confettiController.play();
+    };
+  }
+
+  @override
+  void dispose() {
+    _confettiController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,30 +54,54 @@ class AboutScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFF4E2784),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: const BackButton(color: Colors.white), // Standard back button
+      ),
       body: SafeArea(
         child: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+              padding: const EdgeInsets.fromLTRB(40, 0, 40, 20),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   // --- LEFT COLUMN: LOGOS ---
                   SizedBox(
-                    width: isLargeScreen ? 220 : 140, // Adjust column width
+                    width: isLargeScreen ? 220 : 140,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // UF Logo always present
-                        Image.asset('assets/images/uf_logo.webp', width: 100),
+                        // UF Logo
+                        GestureDetector(
+                          onTap: () => EasterEggService().tapLogoForPi(),
+                          child: Image.asset(
+                            'assets/images/uf_logo.webp',
+                            width: 100,
+                            // Removed color: Colors.white to show original logo
+                            // (avoids solid white box if image has bg)
+                          ),
+                        ),
 
                         const Spacer(),
                         // Dynamic MAN/JAS Logo
-                        Image.asset(logoAsset, width: logoWidth),
+                        GestureDetector(
+                          onTap: () => EasterEggService().tapLogoForPi(),
+                          child: Image.asset(logoAsset, width: logoWidth),
+                        ),
                         const SizedBox(height: 20),
-                        const Text(
-                          'Проєкт створено на замовлення\nМалої академії наук України\nза ініціативи UF Incubator.',
-                          style: TextStyle(fontSize: 10, color: Colors.white70),
+
+                        // Outex Tap
+                        GestureDetector(
+                          onTap: () => EasterEggService().tapOutex(),
+                          child: Text(
+                            AppLocale.tr('about_project_info'),
+                            style: const TextStyle(
+                              fontSize: 10,
+                              color: Colors.white70,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -60,94 +111,101 @@ class AboutScreen extends StatelessWidget {
 
                   // --- RIGHT COLUMN: CONTENT ---
                   Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Про OUTEX',
-                            style: TextStyle(
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          AppLocale.tr('about_title'),
+                          style: const TextStyle(
+                            fontSize: 26, // Reduced slightly
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
-                          const SizedBox(height: 20),
-                          const Text(
-                            'OUTEX — це український стартап, який створює інноваційні мобільні застосунки для спорту та реабілітації з використанням штучного інтелекту.',
-                            style: TextStyle(fontSize: 16, color: Colors.white),
-                          ),
-                          const SizedBox(height: 15),
-                          const Text(
-                            'Ми допомагаємо людям тренуватись будь-де й будь-коли, стежити за правильною технікою виконання вправ та отримувати персональні плани тренувань.',
-                            style: TextStyle(fontSize: 16, color: Colors.white),
-                          ),
-                          const SizedBox(height: 15),
-                          const Text(
-                            'Підтримуючи Малу академію наук України, ми хочемо, щоб сучасні технології допомагали дітям полюбити математику, науку та рух.',
-                            style: TextStyle(fontSize: 16, color: Colors.white),
-                          ),
-                          const SizedBox(height: 30),
-
-                          // Photo & QR Row
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              // Photo
-                              Container(
-                                width: 120,
-                                height: 120,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                  color: Colors.white24,
-                                  image: const DecorationImage(
-                                    image: AssetImage(
-                                      'assets/images/about_photo.jpg',
-                                    ),
-                                    fit: BoxFit.cover,
+                        ),
+                        const SizedBox(height: 15), // Reduced spacing
+                        // Use Flexible to prevent overflow
+                        Flexible(
+                          child: SingleChildScrollView(
+                            physics: const BouncingScrollPhysics(),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  AppLocale.tr('about_text_1'),
+                                  style: const TextStyle(
+                                    fontSize: 14, // Reduced standard text size
+                                    color: Colors.white,
                                   ),
                                 ),
-                              ),
-                              const SizedBox(width: 20),
-
-                              // QR Code (No white background)
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.asset(
-                                    'assets/images/qr_code.png',
-                                    width: 100,
-                                    height: 100,
+                                const SizedBox(height: 8),
+                                Text(
+                                  AppLocale.tr('about_text_2'),
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
                                   ),
-                                  const SizedBox(height: 10),
-                                  const Text(
-                                    'outexua.com',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.white70,
-                                    ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  AppLocale.tr('about_text_3'),
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
                                   ),
-                                ],
-                              ),
-                            ],
+                                ),
+                              ],
+                            ),
                           ),
-                          const SizedBox(height: 20),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(height: 15),
+
+                        // QR Code Row - Fixed position at bottom
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: Colors
+                                    .white, // Restore white bg for readability for now
+                              ),
+                              child: Image.asset(
+                                'assets/images/qr_code.png',
+                                width: 80,
+                                height: 80,
+                              ),
+                            ),
+                            const SizedBox(width: 15),
+                            const Text(
+                              'outexua.com',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.white70,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
 
-            // Back Button
-            Positioned(
-              top: 20,
-              right: 20,
-              child: FloatingActionButton.small(
-                backgroundColor: Colors.white,
-                child: const Icon(Icons.close, color: Color(0xFF4E2784)),
-                onPressed: () => Navigator.of(context).pop(),
+            // Confetti
+            Align(
+              alignment: Alignment.topCenter,
+              child: ConfettiWidget(
+                confettiController: _confettiController,
+                blastDirectionality: BlastDirectionality.explosive,
+                shouldLoop: false,
+                colors: const [
+                  Colors.green,
+                  Colors.black,
+                  Colors.white,
+                ], // Matrix/Pi theme
               ),
             ),
           ],

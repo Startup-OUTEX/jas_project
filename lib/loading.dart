@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'game_question.dart';
+import 'locale_strings.dart';
 
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({super.key});
@@ -37,41 +38,45 @@ class _LoadingScreenState extends State<LoadingScreen> {
         child: Stack(
           children: [
             // Контент по центру
-            const Center(
+            // Контент по центру
+            Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     width: 50,
                     height: 50,
                     child: CircularProgressIndicator(color: Colors.white),
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
                   Text(
-                    'Завантаження...',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    AppLocale.tr('loading_text'),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Text(
-                    'Готуємо для тебе завдання з геометрії...',
-                    style: TextStyle(fontSize: 16),
+                    AppLocale.tr('loading_subtext'),
+                    style: const TextStyle(fontSize: 16),
                   ),
                 ],
               ),
             ),
 
             // --- ФУТЕР (ФИКСИРОВАН) ---
-            const Positioned(
+            Positioned(
               left: 0,
               right: 0,
               bottom: 0,
               child: Column(
                 children: [
                   Text(
-                    'Застосунок створено за підтримки OUTEX',
-                    style: TextStyle(fontSize: 11, color: Colors.white70),
+                    AppLocale.tr('footer_text'),
+                    style: const TextStyle(fontSize: 11, color: Colors.white70),
                   ),
-                  Text(
+                  const Text(
                     'outexua.com',
                     style: TextStyle(fontSize: 11, color: Colors.white70),
                   ),

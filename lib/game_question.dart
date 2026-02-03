@@ -77,11 +77,9 @@ class GameQuestionScreen extends StatelessWidget {
                             );
                             if (topScores.isEmpty) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    'Ще нікого немає. Стань першим!',
-                                  ),
-                                  duration: Duration(seconds: 2),
+                                SnackBar(
+                                  content: Text(AppLocale.tr('main_empty')),
+                                  duration: const Duration(seconds: 2),
                                 ),
                               );
                             }

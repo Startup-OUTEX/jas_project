@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'loading.dart';
+import 'locale_strings.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -72,14 +73,14 @@ class _SplashScreenState extends State<SplashScreen>
           ),
 
           // Футер (прибит к низу)
-          const Positioned(
+          Positioned(
             left: 0,
             right: 0,
             bottom: 20,
             child: Center(
               child: Text(
-                'Застосунок створено за підтримки OUTEX',
-                style: TextStyle(fontSize: 14, color: Colors.white),
+                AppLocale.tr('footer_text'),
+                style: const TextStyle(fontSize: 14, color: Colors.white),
               ),
             ),
           ),

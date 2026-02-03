@@ -1,16 +1,27 @@
-# jas_project
+# JAS Project "Draw A Circle"
 
-A new Flutter project.
+Welcome to the JAS Project repository.
+
+## 📚 Documentation / Документація
+
+Please refer to the specific documentation for your needs:
+
+### 🇺🇦 Для Музею / Клієнтів
+👉 [**Інструкція Користувача (README_client.md)**](README_client.md)
+*   Опис функціоналу.
+*   Паролі та коди.
+*   Список усіх пасхалок.
+
+### 💻 For Developers
+👉 [**Developer Guide (README_developer.md)**](README_developer.md)
+*   Project structure.
+*   Tech stack and architecture.
+*   Build commands and debugging notes.
+
+---
 
 ## Getting Started
 
 This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
 For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+[online documentation](https://docs.flutter.dev/).
