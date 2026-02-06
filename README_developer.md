@@ -63,12 +63,32 @@ flutter run -d windows
 flutter run -d macos
 ```
 
-## 📦 Building for Release
+## 📦 Building for Release (Створення файлів)
 
+### 🤖 Android (APK)
+To generate an APK file for Android tablets/phones:
 ```bash
-# Android APK
 flutter build apk --release
+```
+*   **File Location**: `build/app/outputs/flutter-apk/app-release.apk`
+*   You can copy this file to your tablet and install it.
 
-# Windows
+### 🪟 Windows (.exe)
+To generate a Windows application (folder with .exe):
+```bash
 flutter build windows --release
+```
+*   **File Location**: `build/windows/runner/release/`
+*   **Important**: You must share the **entire folder**, not just the `.exe` file. The `.exe` needs the `.dll` and `data` folder next to it to run.
+
+### 🍎 iOS (iPhone/iPad) & macOS
+**Requirement**: You need a computer running **macOS** (MacBook, Mac Mini, etc.) with Xcode installed. **It is NOT possible to build for iOS/macOS on Windows.**
+
+If you have a Mac:
+```bash
+# iOS (IPA - requires Developer Account)
+flutter build ipa --release
+
+# macOS (DMG/App)
+flutter build macos --release
 ```
