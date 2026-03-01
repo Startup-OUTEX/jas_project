@@ -60,6 +60,7 @@ class EasterEggService extends ChangeNotifier {
     }
 
     // Attempting to use accelerometerEvents (AccelerometerEvent) which includes gravity
+    /*
     _accelerometerSubscription = accelerometerEventStream().listen((event) {
       double magnitude = event.x.abs() + event.y.abs() + event.z.abs();
       // With gravity (approx 9.8), standing still is ~9.8.
@@ -74,6 +75,7 @@ class EasterEggService extends ChangeNotifier {
         }
       }
     });
+    */
   }
 
   // --- TRIGGERS ---

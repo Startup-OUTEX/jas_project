@@ -1,8 +1,12 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/foundation.dart';
 
 class AppLocale {
   static const String keyLocale = 'kb_locale_code';
   static String currentCode = 'uk';
+  static final ValueNotifier<String> localeNotifier = ValueNotifier<String>(
+    'uk',
+  );
 
   static final Map<String, Map<String, String>> _strings = {
     'uk': {
@@ -299,11 +303,13 @@ class AppLocale {
   static Future<void> init() async {
     final prefs = await SharedPreferences.getInstance();
     currentCode = prefs.getString(keyLocale) ?? 'uk';
+    localeNotifier.value = currentCode;
   }
 
   static Future<void> setLocale(String code) async {
     if (!_strings.containsKey(code)) return;
     currentCode = code;
+    localeNotifier.value = code;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(keyLocale, code);
   }

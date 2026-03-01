@@ -151,7 +151,6 @@ class _Settings1ScreenState extends State<Settings1Screen> {
                           },
                         ),
                         MethodExplanationWidget(method: _accuracyMethod),
-                        MethodExplanationWidget(method: _accuracyMethod),
                         const SizedBox(height: 20),
 
                         // Admin Login Button (if not admin)
