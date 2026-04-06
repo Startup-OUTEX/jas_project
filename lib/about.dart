@@ -41,12 +41,12 @@ class _AboutScreenState extends State<AboutScreen> {
     String logoAsset;
     if (isEnglish) {
       logoAsset = isLargeScreen
-          ? 'assets/images/JASBigWLogo.png'
-          : 'assets/images/JASSmallWLogo.png';
+          ? 'assets/images/JAS_full_text_white_transparent.png'
+          : 'assets/images/JAS_full_text_white_transparent.png';
     } else {
       logoAsset = isLargeScreen
-          ? 'assets/images/ManBigWLogo.png'
-          : 'assets/images/ManSmallWLogo.png';
+          ? 'assets/images/MAN_full_text_white_transparent.png'
+          : 'assets/images/MAN_abbr_white_transparent.png';
     }
 
     // Adjust logo size based on screen size
@@ -168,11 +168,9 @@ class _AboutScreenState extends State<AboutScreen> {
                             Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(8),
-                                color: Colors
-                                    .white, // Restore white bg for readability for now
                               ),
                               child: Image.asset(
-                                'assets/images/qr_code.png',
+                                'assets/images/qr-code.png',
                                 width: 80,
                                 height: 80,
                               ),
