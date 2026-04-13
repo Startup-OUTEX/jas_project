@@ -8,6 +8,7 @@ import 'services/easter_egg_service.dart';
 
 import 'dart:io';
 import 'package:flutter/foundation.dart'; // For kIsWeb
+import 'package:window_manager/window_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,7 +23,11 @@ void main() async {
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
+  } else if (!kIsWeb && Platform.isWindows) {
+    await windowManager.ensureInitialized();
+    await windowManager.setFullScreen(true);
   }
+  
   runApp(const MyApp());
 }
 
@@ -216,6 +221,53 @@ class _MyAppState extends State<MyApp> {
               BlendMode.modulate,
             ),
             child: app,
+          );
+        }
+
+        // 5. Apply Windows Desktop Scale & Close Button
+        if (!kIsWeb && Platform.isWindows) {
+          app = Directionality(
+            textDirection: TextDirection.ltr,
+            child: Stack(
+              children: [
+                Center(
+                  child: Container(
+                    color: const Color(0xFF4E2784),
+                    child: AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child: FittedBox(
+                        fit: BoxFit.contain,
+                        alignment: Alignment.center,
+                        child: SizedBox(
+                          width: 1920,
+                          height: 1080,
+                          child: app, // The entire app is constrained to 1920x1080
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 20, // Moved slightly higher
+                  right: 20,
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(50),
+                      onTap: () => exit(0),
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.5),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.close, color: Colors.white, size: 40),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           );
         }
 
