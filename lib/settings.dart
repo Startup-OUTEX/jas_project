@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'dart:async';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'services/settings_service.dart';
 import 'services/easter_egg_service.dart';
 import 'services/score_service.dart';
@@ -24,6 +27,7 @@ class _Settings1ScreenState extends State<Settings1Screen> {
   bool _isLoading = true;
   bool _isAdmin = false;
   bool _isSoundEnabled = true;
+  Timer? _adminTimer;
 
   @override
   void initState() {
@@ -42,6 +46,33 @@ class _Settings1ScreenState extends State<Settings1Screen> {
     });
   }
 
+  void _startAdminTimer() {
+    _adminTimer?.cancel();
+    _adminTimer = Timer(const Duration(seconds: 30), () {
+      if (mounted && _isAdmin) {
+        _logoutAdmin();
+      }
+    });
+  }
+
+  void _logoutAdmin() {
+    setState(() {
+      _isAdmin = false;
+    });
+    _adminTimer?.cancel();
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Сесію адміністратора завершено (30 сек)')),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _adminTimer?.cancel();
+    super.dispose();
+  }
+
   void _showAdminLogin() async {
     final bool? success = await showDialog<bool>(
       context: context,
@@ -50,6 +81,7 @@ class _Settings1ScreenState extends State<Settings1Screen> {
 
     if (success == true && mounted) {
       setState(() => _isAdmin = true);
+      _startAdminTimer();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(AppLocale.tr('admin_mode_enabled'))),
       );
@@ -325,6 +357,36 @@ class _Settings1ScreenState extends State<Settings1Screen> {
                                   ),
                                 ),
                               ),
+                            ],
+                          ),
+                          const SizedBox(height: 15),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: OutlinedButton.icon(
+                                  onPressed: _logoutAdmin,
+                                  icon: const Icon(Icons.logout, color: Colors.white),
+                                  label: const Text('Вийти з адмін-панелі', style: TextStyle(color: Colors.white)),
+                                  style: OutlinedButton.styleFrom(
+                                    side: const BorderSide(color: Colors.white),
+                                    padding: const EdgeInsets.symmetric(vertical: 12),
+                                  ),
+                                ),
+                              ),
+                              if (!kIsWeb && Platform.isWindows) ...[
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: ElevatedButton.icon(
+                                    onPressed: () => exit(0),
+                                    icon: const Icon(Icons.power_settings_new, color: Colors.white),
+                                    label: const Text('ВИЙТИ З ГРИ', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.redAccent,
+                                      padding: const EdgeInsets.symmetric(vertical: 12),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ],
                           ),
                         ],

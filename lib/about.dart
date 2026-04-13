@@ -49,8 +49,10 @@ class _AboutScreenState extends State<AboutScreen> {
           : 'assets/images/MAN_abbr_white_transparent.png';
     }
 
-    // Adjust logo size based on screen size
-    final double logoWidth = isLargeScreen ? 200 : 120;
+    // Adjust logo size based on screen size (substantially larger for electronic boards)
+    final double scaleFactor = isLargeScreen ? (MediaQuery.of(context).size.width / 1920) : 1.0;
+    final double logoWidth = isLargeScreen ? (250 * scaleFactor).clamp(200.0, 400.0) : 120.0;
+    final double ufLogoWidth = isLargeScreen ? (150 * scaleFactor).clamp(120.0, 250.0) : 100.0;
 
     return Scaffold(
       backgroundColor: const Color(0xFF4E2784),
@@ -68,8 +70,8 @@ class _AboutScreenState extends State<AboutScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   // --- LEFT COLUMN: LOGOS ---
-                  SizedBox(
-                    width: isLargeScreen ? 220 : 140,
+                  Expanded(
+                    flex: isLargeScreen ? 2 : 3,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -78,9 +80,7 @@ class _AboutScreenState extends State<AboutScreen> {
                           onTap: () => EasterEggService().tapLogoForPi(),
                           child: Image.asset(
                             'assets/images/uf_logo.webp',
-                            width: 100,
-                            // Removed color: Colors.white to show original logo
-                            // (avoids solid white box if image has bg)
+                            width: ufLogoWidth,
                           ),
                         ),
 

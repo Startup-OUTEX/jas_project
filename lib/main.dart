@@ -247,25 +247,6 @@ class _MyAppState extends State<MyApp> {
                     ),
                   ),
                 ),
-                Positioned(
-                  top: 20, // Moved slightly higher
-                  right: 20,
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(50),
-                      onTap: () => exit(0),
-                      child: Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.5),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(Icons.close, color: Colors.white, size: 40),
-                      ),
-                    ),
-                  ),
-                ),
               ],
             ),
           );
