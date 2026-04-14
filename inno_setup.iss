@@ -1,9 +1,9 @@
 [Setup]
 ; Унікальний ідентифікатор вашого застосунку.
 AppId={{2A5C70DB-9C80-4D53-BA0C-52A5D5A6DBAF}
-AppName=Jas Project
-AppVersion=1.1.0
-AppPublisher=Jas Project Developer
+AppName=Draw A Circle — JAS Project
+AppVersion=1.0.0
+AppPublisher=OUTEX
 DefaultDirName={autopf}\JasProject
 DisableProgramGroupPage=yes
 ; Куди буде збережений готовий інсталятор .exe
