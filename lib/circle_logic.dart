@@ -1,3 +1,4 @@
+import 'services/responsive.dart';
 import 'dart:math';
 import 'dart:ui';
 
@@ -21,7 +22,7 @@ class CircleEvaluator {
       return CircleResult(
         score: 0,
         center: Offset.zero,
-        radius: 0,
+        radius: 0.rRes,
         message: 'Малюй далі...',
       );
     }

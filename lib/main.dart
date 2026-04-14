@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'services/responsive.dart';
 import 'package:flutter/services.dart';
 import 'splash_screen.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'locale_strings.dart';
 
@@ -53,19 +55,19 @@ class _MyAppState extends State<MyApp> {
           context: navigatorKey.currentState!.context,
           builder: (ctx) => AlertDialog(
             backgroundColor: Colors.brown[100],
-            title: const Text("📦 Meow!"),
+            title: Text("📦 Meow!"),
             content: Column(
               mainAxisSize: MainAxisSize.min,
-              children: const [
-                Icon(Icons.pets, size: 60, color: Colors.orange),
-                SizedBox(height: 10),
+              children: [
+                Icon(Icons.pets, size: 60.rRes, color: Colors.orange),
+                SizedBox(height: 10..hRes),
                 Text("Я живий! (Напевно)\n\nI am alive! (Probably)"),
               ],
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(ctx),
-                child: const Text("OK"),
+                child: Text("OK"),
               ),
             ],
           ),
@@ -79,18 +81,18 @@ class _MyAppState extends State<MyApp> {
           context: navigatorKey.currentState!.context,
           builder: (ctx) => AlertDialog(
             backgroundColor: Colors.black,
-            title: const Text(
+            title: Text(
               "⚠️ 1/0 Error",
               style: TextStyle(color: Colors.red),
             ),
-            content: const Text(
+            content: Text(
               "Обережно! Ти ледь не створив чорну діру.\n\nWarning! You almost created a black hole.",
               style: TextStyle(color: Colors.white),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(ctx),
-                child: const Text("OK"),
+                child: Text("OK"),
               ),
             ],
           ),
@@ -102,13 +104,13 @@ class _MyAppState extends State<MyApp> {
       if (navigatorKey.currentState?.context != null) {
         showDialog(
           context: navigatorKey.currentState!.context,
-          builder: (ctx) => const SimpleDialog(
+          builder: (ctx) => SimpleDialog(
             backgroundColor: Colors.white,
             children: [
               Center(
-                child: Icon(Icons.fitness_center, size: 80, color: Colors.blue),
+                child: Icon(Icons.fitness_center, size: 80.rRes, color: Colors.blue),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 10..hRes),
               Center(
                 child: Text(
                   "Качаємо мозок!",
@@ -127,7 +129,7 @@ class _MyAppState extends State<MyApp> {
           context: navigatorKey.currentState!.context,
           builder: (ctx) => Dialog(
             backgroundColor: Colors.transparent,
-            insetPadding: const EdgeInsets.all(10),
+            insetPadding: EdgeInsets.all(10.rRes),
             child: InteractiveViewer(
               panEnabled: true,
               minScale: 0.5,
@@ -224,31 +226,19 @@ class _MyAppState extends State<MyApp> {
           );
         }
 
-        // 5. Apply Windows Desktop Scale & Close Button
+        // 5. Apply Windows Desktop Scale
         if (!kIsWeb && Platform.isWindows) {
-          app = Directionality(
-            textDirection: TextDirection.ltr,
-            child: Stack(
-              children: [
-                Center(
-                  child: Container(
-                    color: const Color(0xFF4E2784),
-                    child: AspectRatio(
-                      aspectRatio: 16 / 9,
-                      child: FittedBox(
-                        fit: BoxFit.contain,
-                        alignment: Alignment.center,
-                        child: SizedBox(
-                          width: 1920,
-                          height: 1080,
-                          child: app, // The entire app is constrained to 1920x1080
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          app = ScreenUtilInit(
+            designSize: const Size(1920, 1080),
+            minTextAdapt: true,
+            splitScreenMode: true,
+            builder: (context, child) {
+              return Directionality(
+                textDirection: TextDirection.ltr,
+                child: child!,
+              );
+            },
+            child: app,
           );
         }
 

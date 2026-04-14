@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'services/responsive.dart';
 import 'game2.dart';
 import 'settings.dart';
 import 'records2.dart';
@@ -30,11 +31,10 @@ class GameQuestionScreen extends StatelessWidget {
                   children: [
                     // Меню слева + кнопки
                     Container(
-                      width:
-                          250, // Expanded width for the big logo (approx 2x of 120)
+                      width: 400.wRes, // Massively wider side panel
                       padding: const EdgeInsets.symmetric(
-                        vertical: 20,
-                        horizontal: 10,
+                        vertical: 40,
+                        horizontal: 20,
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -42,7 +42,7 @@ class GameQuestionScreen extends StatelessWidget {
                           const Spacer(),
                           // Explicitly BIGGER logo for Main Screen
                           SizedBox(
-                            width: 440, // As requested/implied 2x size
+                            width: 600.wRes, // Giant logo
                             child: Image.asset(
                               'assets/images/logo.png',
                               fit: BoxFit.contain,
@@ -62,7 +62,7 @@ class GameQuestionScreen extends StatelessWidget {
                               );
                             },
                           ),
-                          const SizedBox(height: 15),
+                          SizedBox(height: 30.hRes),
                           // Кнопка Рейтингу
                           _buildGameButton(
                             context,
@@ -83,7 +83,7 @@ class GameQuestionScreen extends StatelessWidget {
                                 if (topScores.isEmpty) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                      content: Text(AppLocale.tr('main_empty')),
+                                      content: Text(AppLocale.tr('main_empty'), style: TextStyle(fontSize: 24.spRes)),
                                       duration: const Duration(seconds: 2),
                                     ),
                                   );
@@ -102,25 +102,28 @@ class GameQuestionScreen extends StatelessWidget {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(
-                              AppLocale.tr('main_title'),
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 28,
-                                fontFamily: 'e-Ukraine', // Ensure font usage
-                                fontWeight: FontWeight.w900,
-                                height: 1.2,
-                                color: Colors.white,
-                                shadows: [
-                                  Shadow(
-                                    offset: Offset(0, 4),
-                                    blurRadius: 8,
-                                    color: Colors.black45,
-                                  ),
-                                ],
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 40.wRes),
+                              child: Text(
+                                AppLocale.tr('main_title'),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 64.spRes, // Massive Hero Title
+                                  fontFamily: 'e-Ukraine', // Ensure font usage
+                                  fontWeight: FontWeight.w900,
+                                  height: 1.2.hRes,
+                                  color: Colors.white,
+                                  shadows: [
+                                    Shadow(
+                                      offset: Offset(0, 4),
+                                      blurRadius: 15,
+                                      color: Colors.black45,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                            const SizedBox(height: 40),
+                            SizedBox(height: 80.hRes),
 
                             // Кнопка "Почати"
                             TweenAnimationBuilder<double>(
@@ -136,13 +139,13 @@ class GameQuestionScreen extends StatelessWidget {
                               onEnd: () {},
                               child: Container(
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(50),
-                                  boxShadow: const [
+                                  borderRadius: BorderRadius.circular(80),
+                                  boxShadow: [
                                     BoxShadow(
                                       color: Colors.purpleAccent,
-                                      blurRadius: 20,
-                                      spreadRadius: 2,
-                                      offset: Offset(0, 5),
+                                      blurRadius: 30,
+                                      spreadRadius: 5,
+                                      offset: Offset(0, 10),
                                     ),
                                   ],
                                 ),
@@ -165,18 +168,18 @@ class GameQuestionScreen extends StatelessWidget {
                                       ),
                                     );
                                   },
-                                  icon: const Icon(
+                                  icon: Icon(
                                     Icons.play_arrow_rounded,
                                     color: Colors.white,
-                                    size: 40,
+                                    size: 70.rRes, // Huge Play icon
                                   ),
                                   label: Text(
                                     AppLocale.tr('main_play'),
-                                    style: const TextStyle(
-                                      fontSize: 24,
+                                    style: TextStyle(
+                                      fontSize: 48.spRes, // Huge font
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
-                                      letterSpacing: 1.5,
+                                      letterSpacing: 2.5,
                                     ),
                                   ),
                                   style: ElevatedButton.styleFrom(
@@ -196,7 +199,7 @@ class GameQuestionScreen extends StatelessWidget {
                               ),
                             ),
 
-                            const SizedBox(height: 40),
+                            SizedBox(height: 40..hRes),
 
                             // Footer is now here, aligned with content
                             GestureDetector(
@@ -245,8 +248,8 @@ class GameQuestionScreen extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: color.withOpacity(0.4),
-            blurRadius: 10,
-            spreadRadius: 2,
+            blurRadius: 15,
+            spreadRadius: 5,
           ),
         ],
       ),
@@ -257,8 +260,8 @@ class GameQuestionScreen extends StatelessWidget {
           onTap: onTap,
           customBorder: const CircleBorder(),
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Icon(icon, color: color, size: 34),
+            padding: EdgeInsets.all(24.0.rRes), // Larger touch target
+            child: Icon(icon, color: color, size: 70.rRes), // Massive icons
           ),
         ),
       ),

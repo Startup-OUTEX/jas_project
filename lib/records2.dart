@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'services/responsive.dart';
 import 'package:intl/intl.dart';
 import 'services/score_service.dart';
 import 'widgets/app_footer.dart';
@@ -86,14 +87,14 @@ class _Records2ScreenState extends State<Records2Screen>
                             children: [
                               Text(
                                 AppLocale.tr('rec_title'),
-                                style: const TextStyle(
-                                  fontSize: 24,
+                                style: TextStyle(
+                                  fontSize: 48.spRes,
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
-                              const SizedBox(height: 10),
+                              SizedBox(height: 10..hRes),
 
                               // Картки найкращих
                               Row(
@@ -115,38 +116,42 @@ class _Records2ScreenState extends State<Records2Screen>
                                 ],
                               ),
 
-                              const SizedBox(height: 15),
+                              SizedBox(height: 15..hRes),
 
                               // Таблиця
                               Expanded(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(15),
-                                    color: Colors.white.withOpacity(0.05),
-                                  ),
-                                  padding: const EdgeInsets.all(15),
-                                  child: Row(
-                                    children: [
-                                      // Список рекордів
-                                      Expanded(
-                                        flex: 2,
-                                        child: _topScores.isEmpty
-                                            ? Center(
-                                                child: Text(
-                                                  AppLocale.tr('rec_empty'),
-                                                  textAlign: TextAlign.center,
-                                                  style: const TextStyle(
-                                                    color: Colors.white70,
-                                                  ),
+                                child: Center(
+                                  child: ConstrainedBox(
+                                    constraints: const BoxConstraints(maxWidth: 1000),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.white24, width: 2),
+                                        borderRadius: BorderRadius.circular(24.rRes),
+                                        color: Colors.white.withOpacity(0.05),
+                                      ),
+                                      padding: EdgeInsets.all(30.rRes),
+                                      child: Row(
+                                        children: [
+                                          // Список рекордів
+                                          Expanded(
+                                            flex: 2,
+                                            child: _topScores.isEmpty
+                                                ? Center(
+                                                    child: Text(
+                                                      AppLocale.tr('rec_empty'),
+                                                      textAlign: TextAlign.center,
+                                                      style: TextStyle(
+                                                        color: Colors.white70,
+                                                        fontSize: 48.spRes,
+                                                      ),
                                                 ),
                                               )
                                             : ListView.separated(
                                                 itemCount: _topScores.length,
                                                 separatorBuilder: (c, i) =>
-                                                    const Divider(
+                                                    Divider(
                                                       color: Colors.white24,
-                                                      height: 10,
+                                                      height: 10.hRes,
                                                     ),
                                                 itemBuilder: (c, i) {
                                                   final entry = _topScores[i];
@@ -159,33 +164,33 @@ class _Records2ScreenState extends State<Records2Screen>
                                                     rankColor = const Color(
                                                       0xFFFFD700,
                                                     ); // Gold
-                                                    rankWidget = const Icon(
+                                                    rankWidget = Icon(
                                                       Icons.emoji_events,
                                                       color: Color(0xFFFFD700),
-                                                      size: 24,
+                                                      size: 24.rRes,
                                                     );
                                                   } else if (i == 1) {
                                                     rankColor = const Color(
                                                       0xFFC0C0C0,
                                                     ); // Silver
-                                                    rankWidget = const Icon(
+                                                    rankWidget = Icon(
                                                       Icons.emoji_events,
                                                       color: Color(0xFFC0C0C0),
-                                                      size: 22,
+                                                      size: 22.rRes,
                                                     );
                                                   } else if (i == 2) {
                                                     rankColor = const Color(
                                                       0xFFCD7F32,
                                                     ); // Bronze
-                                                    rankWidget = const Icon(
+                                                    rankWidget = Icon(
                                                       Icons.emoji_events,
                                                       color: Color(0xFFCD7F32),
-                                                      size: 20,
+                                                      size: 20.rRes,
                                                     );
                                                   } else {
                                                     rankWidget = Text(
                                                       '#${i + 1}',
-                                                      style: const TextStyle(
+                                                      style: TextStyle(
                                                         color: Colors.white70,
                                                         fontWeight:
                                                             FontWeight.bold,
@@ -222,20 +227,20 @@ class _Records2ScreenState extends State<Records2Screen>
                                                     child: Row(
                                                       children: [
                                                         SizedBox(
-                                                          width: 40,
+                                                          width: 80.wRes,
                                                           child: Center(
                                                             child: rankWidget,
                                                           ),
                                                         ),
-                                                        const SizedBox(
-                                                          width: 10,
+                                                        SizedBox(
+                                                          width: 20.wRes,
                                                         ),
                                                         SizedBox(
-                                                          width: 70,
+                                                          width: 140.wRes,
                                                           child: Text(
                                                             '${entry.score.toStringAsFixed(1)}%',
                                                             style: TextStyle(
-                                                              fontSize: 14,
+                                                              fontSize: 24.spRes,
                                                               color: rankColor,
                                                               fontWeight:
                                                                   FontWeight
@@ -255,8 +260,8 @@ class _Records2ScreenState extends State<Records2Screen>
                                                                 overflow:
                                                                     TextOverflow
                                                                         .ellipsis,
-                                                                style: const TextStyle(
-                                                                  fontSize: 14,
+                                                                style: TextStyle(
+                                                                  fontSize: 24.spRes,
                                                                   color: Colors
                                                                       .white,
                                                                   fontWeight:
@@ -270,8 +275,8 @@ class _Records2ScreenState extends State<Records2Screen>
                                                                 ).format(
                                                                   entry.date,
                                                                 ),
-                                                                style: const TextStyle(
-                                                                  fontSize: 10,
+                                                                style: TextStyle(
+                                                                  fontSize: 18.spRes,
                                                                   color: Colors
                                                                       .white54,
                                                                 ),
@@ -297,15 +302,15 @@ class _Records2ScreenState extends State<Records2Screen>
                                               Text(
                                                 AppLocale.tr('rec_call'),
                                                 textAlign: TextAlign.center,
-                                                style: const TextStyle(
-                                                  fontSize: 14,
+                                                style: TextStyle(
+                                                  fontSize: 24.spRes,
                                                   color: Colors.white,
                                                 ),
                                               ),
-                                              const SizedBox(height: 10),
-                                              const SizedBox(height: 10),
+                                              SizedBox(height: 10..hRes),
+                                              SizedBox(height: 10..hRes),
                                               // Image3 removed
-                                              const SizedBox(height: 10),
+                                              SizedBox(height: 10..hRes),
                                               AnimatedBuilder(
                                                 animation: _pulseAnimation,
                                                 builder: (context, child) {
@@ -333,8 +338,8 @@ class _Records2ScreenState extends State<Records2Screen>
                                                         AppLocale.tr(
                                                           'rec_play',
                                                         ),
-                                                        style: const TextStyle(
-                                                          fontSize: 16,
+                                                        style: TextStyle(
+                                                          fontSize: 16.spRes,
                                                           fontWeight:
                                                               FontWeight.bold,
                                                         ),
@@ -348,6 +353,8 @@ class _Records2ScreenState extends State<Records2Screen>
                                         ),
                                       ),
                                     ],
+                                  ),
+                                ),
                                   ),
                                 ),
                               ),
@@ -372,7 +379,7 @@ class _Records2ScreenState extends State<Records2Screen>
               left: 20,
               child: FloatingActionButton.small(
                 backgroundColor: Colors.white,
-                child: const Icon(Icons.arrow_back, color: Color(0xFF4E2784)),
+                child: Icon(Icons.arrow_back, color: Color(0xFF4E2784)),
                 onPressed: () => Navigator.of(context).pop(),
               ),
             ),
@@ -388,13 +395,13 @@ class _Records2ScreenState extends State<Records2Screen>
         Text(
           title,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 12, color: Colors.white70),
+          style: TextStyle(fontSize: 24.spRes, color: Colors.white70),
         ),
-        const SizedBox(height: 4),
+        SizedBox(height: 4..hRes),
         Text(
           entry != null ? '${entry.score.toStringAsFixed(1)}%' : '--%',
-          style: const TextStyle(
-            fontSize: 16,
+          style: TextStyle(
+            fontSize: 32.spRes,
             color: Colors.yellowAccent,
             fontWeight: FontWeight.bold,
           ),
@@ -403,7 +410,7 @@ class _Records2ScreenState extends State<Records2Screen>
           Text(
             entry.playerName,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontSize: 12, color: Colors.white),
+            style: TextStyle(fontSize: 24.spRes, color: Colors.white),
           ),
       ],
     );

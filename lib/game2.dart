@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'services/responsive.dart';
 import 'dart:async';
 import 'circle_logic.dart';
 import 'records2.dart';
@@ -182,7 +183,7 @@ class _Game2ScreenState extends State<Game2Screen>
           ),
           title: Text(
             AppLocale.tr('game_save_title'),
-            style: const TextStyle(color: Color(0xFF4E2784)),
+            style: TextStyle(color: Color(0xFF4E2784)),
           ),
           content: TextField(
             controller: nameController,
@@ -220,7 +221,7 @@ class _Game2ScreenState extends State<Game2Screen>
               ),
               child: Text(
                 AppLocale.tr('game_btn_save_confirm'),
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.white),
               ),
             ),
           ],
@@ -236,13 +237,13 @@ class _Game2ScreenState extends State<Game2Screen>
         content: Text(
           message,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 18.spRes, fontWeight: FontWeight.bold),
         ),
         duration: const Duration(seconds: 2),
         backgroundColor: Colors.orangeAccent,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        margin: const EdgeInsets.all(50),
+        margin: EdgeInsets.all(50.rRes),
       ),
     );
   }
@@ -306,7 +307,7 @@ class _Game2ScreenState extends State<Game2Screen>
                   left: 20,
                   child: FloatingActionButton.small(
                     backgroundColor: Colors.white,
-                    child: const Icon(
+                    child: Icon(
                       Icons.arrow_back,
                       color: Color(0xFF4E2784),
                     ),
@@ -321,18 +322,18 @@ class _Game2ScreenState extends State<Game2Screen>
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Container(
-                          width: 8,
-                          height: 8,
+                          width: 8.wRes,
+                          height: 8.hRes,
                           decoration: const BoxDecoration(
                             color: Colors.white,
                             shape: BoxShape.circle,
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        SizedBox(height: 20..hRes),
                         Text(
                           AppLocale.tr('game_touch_draw'),
-                          style: const TextStyle(
-                            fontSize: 18,
+                          style: TextStyle(
+                            fontSize: 18.spRes,
                             color: Colors.white70,
                           ),
                         ),
@@ -359,7 +360,7 @@ class _Game2ScreenState extends State<Game2Screen>
                         child: Text(
                           '${_currentScore.toStringAsFixed(0)}%',
                           style: TextStyle(
-                            fontSize: 32,
+                            fontSize: 32.spRes,
                             fontWeight: FontWeight.bold,
                             color: _getColorForScore(_currentScore),
                           ),
@@ -380,8 +381,8 @@ class _Game2ScreenState extends State<Game2Screen>
                         _instructions[_currentInstructionIndex],
                         key: ValueKey<int>(_currentInstructionIndex),
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 16,
+                        style: TextStyle(
+                          fontSize: 16.spRes,
                           color: Colors.white,
                         ),
                       ),
@@ -394,11 +395,11 @@ class _Game2ScreenState extends State<Game2Screen>
                     child: ScaleTransition(
                       scale: _scaleAnimation,
                       child: Container(
-                        padding: const EdgeInsets.all(20),
+                        padding: EdgeInsets.all(20.rRes),
                         decoration: BoxDecoration(
                           color: Colors.black87,
                           borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: Colors.white24, width: 2),
+                          border: Border.all(color: Colors.white24, width: 2.wRes),
                         ),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -414,13 +415,13 @@ class _Game2ScreenState extends State<Game2Screen>
                             Text(
                               _getEncouragingMessage(_result!.score),
                               textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 24,
+                              style: TextStyle(
+                                fontSize: 24.spRes,
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            const SizedBox(height: 30),
+                            SizedBox(height: 30..hRes),
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -431,13 +432,13 @@ class _Game2ScreenState extends State<Game2Screen>
                                       _result = null;
                                     });
                                   },
-                                  icon: const Icon(
+                                  icon: Icon(
                                     Icons.refresh,
                                     color: Color(0xFF4E2784),
                                   ),
                                   label: Text(
                                     AppLocale.tr('game_btn_retry'),
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       color: Color(0xFF4E2784),
                                     ),
                                   ),
@@ -449,16 +450,16 @@ class _Game2ScreenState extends State<Game2Screen>
                                     ),
                                   ),
                                 ),
-                                const SizedBox(width: 20),
+                                SizedBox(width: 20..wRes),
                                 ElevatedButton.icon(
                                   onPressed: _showSaveDialog,
-                                  icon: const Icon(
+                                  icon: Icon(
                                     Icons.save,
                                     color: Colors.white,
                                   ),
                                   label: Text(
                                     AppLocale.tr('game_btn_save'),
-                                    style: const TextStyle(color: Colors.white),
+                                    style: TextStyle(color: Colors.white),
                                   ),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.blueAccent,

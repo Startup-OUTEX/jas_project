@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'services/responsive.dart';
 import 'loading.dart';
 import 'locale_strings.dart';
 
@@ -62,11 +63,11 @@ class _SplashScreenState extends State<SplashScreen>
             child: FadeTransition(
               opacity: _opacityAnimation,
               child: Padding(
-                padding: const EdgeInsets.all(50.0),
+                padding: EdgeInsets.all(50.0.rRes),
                 child: Image.asset(
                   'assets/images/logo.png',
                   fit: BoxFit.contain,
-                  height: MediaQuery.of(context).size.height * 0.4,
+                  height: MediaQuery.of(context).size.height * 0.6,
                 ),
               ),
             ),
@@ -80,7 +81,7 @@ class _SplashScreenState extends State<SplashScreen>
             child: Center(
               child: Text(
                 AppLocale.tr('footer_text'),
-                style: const TextStyle(fontSize: 14, color: Colors.white),
+                style: TextStyle(fontSize: 14.spRes, color: Colors.white),
               ),
             ),
           ),

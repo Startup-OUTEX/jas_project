@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'services/responsive.dart';
 import 'game_question.dart';
 import 'locale_strings.dart';
 
@@ -43,23 +44,24 @@ class _LoadingScreenState extends State<LoadingScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const SizedBox(
-                    width: 50,
-                    height: 50,
-                    child: CircularProgressIndicator(color: Colors.white),
+                  SizedBox(
+                    width: 120.wRes,
+                    height: 120.hRes,
+                    child: const CircularProgressIndicator(color: Colors.white, strokeWidth: 8),
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 48.hRes),
                   Text(
                     AppLocale.tr('loading_text'),
-                    style: const TextStyle(
-                      fontSize: 18,
+                    style: TextStyle(
+                      fontSize: 36.spRes,
                       fontWeight: FontWeight.bold,
+                      letterSpacing: 2.0,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 24.hRes),
                   Text(
                     AppLocale.tr('loading_subtext'),
-                    style: const TextStyle(fontSize: 16),
+                    style: TextStyle(fontSize: 24.spRes, color: Colors.white70),
                   ),
                 ],
               ),
@@ -69,16 +71,16 @@ class _LoadingScreenState extends State<LoadingScreen> {
             Positioned(
               left: 0,
               right: 0,
-              bottom: 0,
+              bottom: 20,
               child: Column(
                 children: [
-                  Text(
+                   Text(
                     AppLocale.tr('footer_text'),
-                    style: const TextStyle(fontSize: 11, color: Colors.white70),
+                    style: TextStyle(fontSize: 18.spRes, color: Colors.white54),
                   ),
-                  const Text(
+                  Text(
                     'outexua.com',
-                    style: TextStyle(fontSize: 11, color: Colors.white70),
+                    style: TextStyle(fontSize: 18.spRes, color: Colors.white54),
                   ),
                 ],
               ),

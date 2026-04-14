@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'services/responsive.dart';
 import 'dart:math';
 import 'dart:async';
 import 'dart:io';
@@ -98,7 +99,7 @@ class _Settings1ScreenState extends State<Settings1Screen> {
         leading: const BackButton(color: Colors.white),
         title: Text(
           AppLocale.tr('set_title'),
-          style: const TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
       ),
@@ -107,11 +108,21 @@ class _Settings1ScreenState extends State<Settings1Screen> {
           : SafeArea(
               child: Stack(
                 children: [
-                  SingleChildScrollView(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                  Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 900),
+                      child: Card(
+                        color: Colors.white.withOpacity(0.05),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24.rRes),
+                          side: BorderSide(color: Colors.white24, width: 1),
+                        ),
+                        margin: EdgeInsets.all(20.rRes),
+                        child: SingleChildScrollView(
+                          padding: EdgeInsets.all(40.rRes), // Double padding inside card
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
                         _buildSectionHeader(AppLocale.tr('set_section_main')),
                         // Language Toggle
                         Row(
@@ -119,7 +130,7 @@ class _Settings1ScreenState extends State<Settings1Screen> {
                           children: [
                             Text(
                               AppLocale.tr('set_lang'),
-                              style: const TextStyle(color: Colors.white70),
+                              style: TextStyle(color: Colors.white70, fontSize: 22.spRes),
                             ),
                             Container(
                               decoration: BoxDecoration(
@@ -137,7 +148,7 @@ class _Settings1ScreenState extends State<Settings1Screen> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 15),
+                        SizedBox(height: 15..hRes),
 
                         // Sound Toggle
                         Row(
@@ -145,7 +156,7 @@ class _Settings1ScreenState extends State<Settings1Screen> {
                           children: [
                             Text(
                               AppLocale.tr('set_sound'),
-                              style: const TextStyle(color: Colors.white70),
+                              style: TextStyle(color: Colors.white70, fontSize: 22.spRes),
                             ),
                             Switch(
                               value: _isSoundEnabled,
@@ -157,7 +168,7 @@ class _Settings1ScreenState extends State<Settings1Screen> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 15),
+                        SizedBox(height: 15..hRes),
 
                         _buildDropdownRow(
                           AppLocale.tr('set_accuracy_method'),
@@ -183,7 +194,7 @@ class _Settings1ScreenState extends State<Settings1Screen> {
                           },
                         ),
                         MethodExplanationWidget(method: _accuracyMethod),
-                        const SizedBox(height: 20),
+                        SizedBox(height: 20..hRes),
 
                         // Admin Login Button (if not admin)
                         if (!_isAdmin)
@@ -192,30 +203,30 @@ class _Settings1ScreenState extends State<Settings1Screen> {
                             margin: const EdgeInsets.only(top: 10),
                             child: OutlinedButton.icon(
                               onPressed: _showAdminLogin,
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.lock,
                                 color: Colors.white70,
                               ),
                               label: Text(
                                 AppLocale.tr('btn_admin_login'),
-                                style: const TextStyle(color: Colors.white),
+                                style: TextStyle(color: Colors.white),
                               ),
                               style: OutlinedButton.styleFrom(
                                 side: const BorderSide(color: Colors.white30),
-                                padding: const EdgeInsets.all(12),
+                                padding: EdgeInsets.all(20.rRes),
                               ),
                             ),
                           ),
 
                         // Restricted Sections
                         if (_isAdmin) ...[
-                          const Divider(color: Colors.white24, height: 40),
+                          Divider(color: Colors.white24, height: 40.hRes),
                           _buildSectionHeader(
                             AppLocale.tr('set_section_gameplay'),
                           ),
                           Text(
                             AppLocale.tr('set_min_percent'),
-                            style: const TextStyle(color: Colors.white70),
+                            style: TextStyle(color: Colors.white70, fontSize: 22.spRes),
                           ),
                           Row(
                             children: [
@@ -238,14 +249,14 @@ class _Settings1ScreenState extends State<Settings1Screen> {
                               ),
                               Text(
                                 '${_minCirclePercentage.toInt()}%',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ],
                           ),
-                          const SizedBox(height: 20),
+                          SizedBox(height: 20..hRes),
 
                           _buildSectionHeader(AppLocale.tr('set_section_data')),
                           _buildDropdownRow(
@@ -259,7 +270,7 @@ class _Settings1ScreenState extends State<Settings1Screen> {
                               }
                             },
                           ),
-                          const SizedBox(height: 20),
+                          SizedBox(height: 20..hRes),
 
                           // Buttons
                           Row(
@@ -288,11 +299,11 @@ class _Settings1ScreenState extends State<Settings1Screen> {
                                   ),
                                   child: Text(
                                     AppLocale.tr('set_clear_cache'),
-                                    style: const TextStyle(color: Colors.white),
+                                    style: TextStyle(color: Colors.white),
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 10),
+                              SizedBox(width: 10..wRes),
                               Expanded(
                                 child: ElevatedButton(
                                   onPressed: () async {
@@ -322,7 +333,7 @@ class _Settings1ScreenState extends State<Settings1Screen> {
                                                 Navigator.pop(context, true),
                                             child: Text(
                                               AppLocale.tr('dialog_yes'),
-                                              style: const TextStyle(
+                                              style: TextStyle(
                                                 color: Colors.red,
                                               ),
                                             ),
@@ -353,36 +364,36 @@ class _Settings1ScreenState extends State<Settings1Screen> {
                                   ),
                                   child: Text(
                                     AppLocale.tr('set_clear_records'),
-                                    style: const TextStyle(color: Colors.white),
+                                    style: TextStyle(color: Colors.white),
                                   ),
                                 ),
                               ),
                             ],
                           ),
-                          const SizedBox(height: 15),
+                          SizedBox(height: 15..hRes),
                           Row(
                             children: [
                               Expanded(
                                 child: OutlinedButton.icon(
                                   onPressed: _logoutAdmin,
-                                  icon: const Icon(Icons.logout, color: Colors.white),
-                                  label: const Text('Вийти з адмін-панелі', style: TextStyle(color: Colors.white)),
+                                  icon: Icon(Icons.logout, color: Colors.white, size: 30.rRes),
+                                  label: Text('Вийти з адмін-панелі', style: TextStyle(color: Colors.white)),
                                   style: OutlinedButton.styleFrom(
                                     side: const BorderSide(color: Colors.white),
-                                    padding: const EdgeInsets.symmetric(vertical: 12),
+                                    padding: EdgeInsets.symmetric(vertical: 24.hRes),
                                   ),
                                 ),
                               ),
                               if (!kIsWeb && Platform.isWindows) ...[
-                                const SizedBox(width: 10),
+                                SizedBox(width: 10..wRes),
                                 Expanded(
                                   child: ElevatedButton.icon(
                                     onPressed: () => exit(0),
-                                    icon: const Icon(Icons.power_settings_new, color: Colors.white),
-                                    label: const Text('ВИЙТИ З ГРИ', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                                    icon: Icon(Icons.power_settings_new, color: Colors.white, size: 30.rRes),
+                                    label: Text('ВИЙТИ З ГРИ', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.redAccent,
-                                      padding: const EdgeInsets.symmetric(vertical: 12),
+                                      padding: EdgeInsets.symmetric(vertical: 24.hRes),
                                     ),
                                   ),
                                 ),
@@ -391,10 +402,13 @@ class _Settings1ScreenState extends State<Settings1Screen> {
                           ),
                         ],
 
-                        const SizedBox(height: 60), // Space for footer
+                        SizedBox(height: 20.hRes), // Adjusted
                       ],
                     ),
                   ),
+                        ), // Card
+                      ), // ConstrainedBox
+                    ), // Center
 
                   // Footer
                   const Positioned(
@@ -414,8 +428,8 @@ class _Settings1ScreenState extends State<Settings1Screen> {
       padding: const EdgeInsets.only(bottom: 10),
       child: Text(
         title,
-        style: const TextStyle(
-          fontSize: 18,
+        style: TextStyle(
+          fontSize: 28.spRes, // Larger header font
           fontWeight: FontWeight.bold,
           color: Colors.white,
         ),
@@ -434,10 +448,10 @@ class _Settings1ScreenState extends State<Settings1Screen> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Expanded(
-          child: Text(label, style: const TextStyle(color: Colors.white70)),
+          child: Text(label, style: TextStyle(color: Colors.white70, fontSize: 22.spRes)),
         ),
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
             border: Border.all(color: Colors.white30),
             borderRadius: BorderRadius.circular(8),
@@ -446,8 +460,8 @@ class _Settings1ScreenState extends State<Settings1Screen> {
             child: DropdownButton<String>(
               value: options.contains(currentValue) ? currentValue : options[0],
               dropdownColor: const Color(0xFF4E2784),
-              icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
-              style: const TextStyle(color: Colors.white),
+              icon: Icon(Icons.arrow_drop_down, color: Colors.white, size: 32.rRes),
+              style: TextStyle(color: Colors.white, fontSize: 22.spRes),
               onChanged: onChanged,
               items: options.map((String value) {
                 return DropdownMenuItem<String>(
@@ -484,6 +498,7 @@ class _Settings1ScreenState extends State<Settings1Screen> {
           style: TextStyle(
             color: isSelected ? Colors.black : Colors.white,
             fontWeight: FontWeight.bold,
+            fontSize: 20.spRes,
           ),
         ),
       ),
@@ -522,13 +537,24 @@ class _MethodExplanationWidgetState extends State<MethodExplanationWidget>
 
   @override
   Widget build(BuildContext context) {
-    String descKey = 'set_desc_\${widget.method}';
-    // Fallbacks if key not found (though we added them)
-    if (widget.method == 'basic') descKey = 'set_desc_rmse';
+    // Build the locale key for this method
+    String descKey;
+    switch (widget.method) {
+      case 'basic':
+        descKey = 'set_desc_rmse';
+      case 'roundness':
+        descKey = 'set_desc_roundness';
+      case 'combined':
+        descKey = 'set_desc_combined';
+      case 'hausdorff':
+        descKey = 'set_desc_hausdorff';
+      default:
+        descKey = 'set_desc_rmse';
+    }
 
     return Container(
       margin: const EdgeInsets.only(top: 10),
-      padding: const EdgeInsets.all(12),
+      padding: EdgeInsets.all(20.rRes),
       decoration: BoxDecoration(
         color: Colors.black26,
         borderRadius: BorderRadius.circular(8),
@@ -539,8 +565,8 @@ class _MethodExplanationWidgetState extends State<MethodExplanationWidget>
         children: [
           // Animation
           Container(
-            width: 60,
-            height: 60,
+            width: 60.wRes,
+            height: 60.hRes,
             margin: const EdgeInsets.only(right: 12),
             decoration: BoxDecoration(
               color: const Color(0xFF2A154C),
@@ -559,7 +585,7 @@ class _MethodExplanationWidgetState extends State<MethodExplanationWidget>
           Expanded(
             child: Text(
               AppLocale.tr(descKey),
-              style: const TextStyle(color: Colors.white70, fontSize: 13),
+              style: TextStyle(color: Colors.white70, fontSize: 13.spRes),
             ),
           ),
         ],
@@ -737,7 +763,7 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog>
         backgroundColor: Colors.white,
         title: Text(
           AppLocale.tr('admin_login_title'),
-          style: const TextStyle(color: Color(0xFF4E2784)),
+          style: TextStyle(color: Color(0xFF4E2784)),
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -751,10 +777,10 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog>
               ),
               onSubmitted: (_) => _checkPassword(),
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: 10..hRes),
             Text(
               AppLocale.tr('admin_forgot_pass'),
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
+              style: TextStyle(fontSize: 12.spRes, color: Colors.grey),
             ),
           ],
         ),
@@ -763,7 +789,7 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog>
             onPressed: () => Navigator.pop(context),
             child: Text(AppLocale.tr('game_btn_cancel')),
           ),
-          ElevatedButton(onPressed: _checkPassword, child: const Text('OK')),
+          ElevatedButton(onPressed: _checkPassword, child: Text('OK')),
         ],
       ),
     );

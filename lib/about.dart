@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'services/responsive.dart';
 import 'locale_strings.dart';
 
 import 'package:confetti/confetti.dart';
@@ -71,34 +72,25 @@ class _AboutScreenState extends State<AboutScreen> {
                 children: [
                   // --- LEFT COLUMN: LOGOS ---
                   Expanded(
-                    flex: isLargeScreen ? 2 : 3,
+                    flex: 1, // Let logos take 25% of screen
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // UF Logo
-                        GestureDetector(
-                          onTap: () => EasterEggService().tapLogoForPi(),
-                          child: Image.asset(
-                            'assets/images/uf_logo.webp',
-                            width: ufLogoWidth,
-                          ),
-                        ),
-
                         const Spacer(),
                         // Dynamic MAN/JAS Logo
                         GestureDetector(
                           onTap: () => EasterEggService().tapLogoForPi(),
                           child: Image.asset(logoAsset, width: logoWidth),
                         ),
-                        const SizedBox(height: 20),
+                        SizedBox(height: 20.hRes),
 
                         // Outex Tap
                         GestureDetector(
                           onTap: () => EasterEggService().tapOutex(),
                           child: Text(
                             AppLocale.tr('about_project_info'),
-                            style: const TextStyle(
-                              fontSize: 10,
+                            style: TextStyle(
+                              fontSize: 14.spRes,
                               color: Colors.white70,
                             ),
                           ),
@@ -107,23 +99,24 @@ class _AboutScreenState extends State<AboutScreen> {
                     ),
                   ),
 
-                  const SizedBox(width: 40),
+                  SizedBox(width: 40..wRes),
 
                   // --- RIGHT COLUMN: CONTENT ---
                   Expanded(
+                    flex: 3, // Text takes 75% of screen
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           AppLocale.tr('about_title'),
-                          style: const TextStyle(
-                            fontSize: 26, // Reduced slightly
+                          style: TextStyle(
+                            fontSize: 48.spRes, // Huge title
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
                         ),
-                        const SizedBox(height: 15), // Reduced spacing
+                        SizedBox(height: 15..hRes), // Reduced spacing
                         // Use Flexible to prevent overflow
                         Flexible(
                           child: SingleChildScrollView(
@@ -134,53 +127,57 @@ class _AboutScreenState extends State<AboutScreen> {
                               children: [
                                 Text(
                                   AppLocale.tr('about_text_1'),
-                                  style: const TextStyle(
-                                    fontSize: 14, // Reduced standard text size
+                                  style: TextStyle(
+                                    fontSize: 24.spRes, // Good presentation size
                                     color: Colors.white,
+                                    height: 1.5,
                                   ),
                                 ),
-                                const SizedBox(height: 8),
+                                SizedBox(height: 16.hRes),
                                 Text(
                                   AppLocale.tr('about_text_2'),
-                                  style: const TextStyle(
-                                    fontSize: 14,
+                                  style: TextStyle(
+                                    fontSize: 24.spRes,
                                     color: Colors.white,
+                                    height: 1.5,
                                   ),
                                 ),
-                                const SizedBox(height: 8),
+                                SizedBox(height: 16.hRes),
                                 Text(
                                   AppLocale.tr('about_text_3'),
-                                  style: const TextStyle(
-                                    fontSize: 14,
+                                  style: TextStyle(
+                                    fontSize: 24.spRes,
                                     color: Colors.white,
+                                    height: 1.5,
                                   ),
                                 ),
                               ],
                             ),
                           ),
                         ),
-                        const SizedBox(height: 15),
+                        SizedBox(height: 15..hRes),
 
-                        // QR Code Row - Fixed position at bottom
+                        // QR Code Row
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Container(
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
+                                borderRadius: BorderRadius.circular(12),
                               ),
                               child: Image.asset(
                                 'assets/images/qr-code.png',
-                                width: 80,
-                                height: 80,
+                                width: 200.wRes,  // Much larger QR
+                                height: 200.hRes,
                               ),
                             ),
-                            const SizedBox(width: 15),
-                            const Text(
+                            SizedBox(width: 24.wRes),
+                            Text(
                               'outexua.com',
                               style: TextStyle(
-                                fontSize: 12,
+                                fontSize: 28.spRes,
                                 color: Colors.white70,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ],
@@ -199,7 +196,7 @@ class _AboutScreenState extends State<AboutScreen> {
                 confettiController: _confettiController,
                 blastDirectionality: BlastDirectionality.explosive,
                 shouldLoop: false,
-                colors: const [
+                colors: [
                   Colors.green,
                   Colors.black,
                   Colors.white,
